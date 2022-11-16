@@ -28,10 +28,6 @@ const addBookHandler = (request, h) => {
     id, name, year, author, summary, publisher, pageCount, readPage, finished: statusFinished, reading, insertedAt, updatedAt,
   };
 
-  books.push(newBook);
-
-  const isSuccess = books.filter((book) => book.id === id).length > 0;
-
   if (!name) {
     const response = h.response({
       status: 'fail',
@@ -48,6 +44,10 @@ const addBookHandler = (request, h) => {
     response.code(400);
     return response;
   }
+
+  books.push(newBook);
+
+  const isSuccess = books.filter((book) => book.id === id).length > 0;
 
   if (isSuccess) {
     const response = h.response({
@@ -79,7 +79,13 @@ const getAllBookHandler = async (request, h) => {
     const response = h.response({
       status: 'success',
       message: `Berhasil menampilkan buku berdasarkan nama = ${name}`,
-      data: nameReading,
+      data: {
+        books: nameReading.map((book) => ({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher,
+        })),
+      },
     });
     response.code(200);
     return response;
@@ -89,7 +95,13 @@ const getAllBookHandler = async (request, h) => {
     const response = h.response({
       status: 'success',
       message: `Berhasil menampilkan buku berdasarkan reading = ${reading}`,
-      data: bookReading,
+      data: {
+        books: bookReading.map((book) => ({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher,
+        })),
+      }
     });
     response.code(200);
     return response;
@@ -99,7 +111,13 @@ const getAllBookHandler = async (request, h) => {
     const response = h.response({
       status: 'success',
       message: `Berhasil menampilkan buku berdasarkan status finishe = ${finished}`,
-      data: bookFinished,
+      data: {
+        books: bookFinished.map((book) => ({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher,
+        })),
+      },
     });
     response.code(200);
     return response;
@@ -108,10 +126,14 @@ const getAllBookHandler = async (request, h) => {
   const response = h.response({
     status: 'success',
     data: {
-      books,
-    },
+      books: books.map((book) => ({
+        id: book.id,
+        name: book.name,
+        publisher: book.publisher,
+      })),
+    }
   });
-  response.code(404);
+  response.code(200);
   return response;
 };
 
@@ -152,7 +174,7 @@ const editBookByIdHandler = (request, h) => {
   if (!name) {
     const response = h.response({
       status: 'fail',
-      message: 'Gagal menambahkan buku. Mohon isi nama buku',
+      message: 'Gagal memperbarui buku. Mohon isi nama buku',
     });
     response.code(400);
     return response;
@@ -160,7 +182,7 @@ const editBookByIdHandler = (request, h) => {
   if (readPage > pageCount) {
     const response = h.response({
       status: 'fail',
-      message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+      message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
     });
     response.code(400);
     return response;
