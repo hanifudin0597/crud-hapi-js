@@ -188,15 +188,6 @@ const editBookByIdHandler = (request, h) => {
     return response;
   }
 
-  if (!id) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Gagal memperbarui buku. Id tidak ditemukan',
-    });
-    response.code(404);
-    return response;
-  }
-
   if (index !== -1) {
     books[index] = {
       ...books[index],
@@ -221,7 +212,7 @@ const editBookByIdHandler = (request, h) => {
 
   const response = h.response({
     status: 'fail',
-    message: 'Gagal memperbarui Buku. Id tidak ditemukan',
+    message: 'Gagal memperbarui buku. Id tidak ditemukan',
   });
   response.code(404);
   return response;
